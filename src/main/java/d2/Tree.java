@@ -64,8 +64,8 @@ public class Tree<T extends Comparable<T>> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        int height = height();
-        appendString(sb, List.of(root), (int) Math.pow(2, height - 1));
+        int nrOfNodesInLastLine = (int) Math.pow(2, height() - 1);
+        appendString(sb, List.of(root), nrOfNodesInLastLine);
         return sb.toString();
     }
 
@@ -90,5 +90,17 @@ public class Tree<T extends Comparable<T>> {
         if (children.stream().anyMatch(Objects::nonNull)) {
             appendString(sb, children, nrOfNodesInLastLine);
         }
+    }
+
+    public T search(T value) {
+        if (root == null) {
+            return null;
+        }
+        Objects.requireNonNull(value);
+        Node<T> closestNode = findClosestNode(root, value);
+        if (closestNode.compareTo(value) == 0) {
+            return closestNode.getValue();
+        }
+        return null;
     }
 }
