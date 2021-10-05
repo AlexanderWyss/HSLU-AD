@@ -116,4 +116,8 @@ public class Tree<T extends Comparable<T>> {
             traverseInorder(node.getRight(), consumer);
         }
     }
+
+    public Node<T> getRoot() {
+        return root;
+    }
 }
