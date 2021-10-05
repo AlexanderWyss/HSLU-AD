@@ -3,6 +3,7 @@ package d2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Binary Tree with unique values
@@ -102,5 +103,17 @@ public class Tree<T extends Comparable<T>> {
             return closestNode.getValue();
         }
         return null;
+    }
+
+    public void traverseInorder(Consumer<T> consumer) {
+        traverseInorder(root, consumer);
+    }
+
+    private void traverseInorder(Node<T> node, Consumer<T> consumer) {
+        if (node != null) {
+            traverseInorder(node.getLeft(), consumer);
+            consumer.accept(node.getValue());
+            traverseInorder(node.getRight(), consumer);
+        }
     }
 }
