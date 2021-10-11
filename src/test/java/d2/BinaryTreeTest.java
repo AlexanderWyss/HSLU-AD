@@ -1,6 +1,5 @@
 package d2;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
@@ -12,7 +11,7 @@ import static org.mockito.Mockito.*;
 class BinaryTreeTest {
     @Test
     void test() {
-        Tree<String, String> tree = buildTree();
+        Tree<String, String> tree = buildTree("A B C D E");
         System.out.println(tree);
     }
 
@@ -136,10 +135,13 @@ class BinaryTreeTest {
         verifyNoInteractions(biConsumer);
     }
 
-    @NotNull
     private BinaryTree<String, String> buildTree() {
+        return buildTree("G H B F E A D C");
+    }
+
+    private BinaryTree<String, String> buildTree(final String keyValues) {
         BinaryTree<String, String> tree = new BinaryTree<>();
-        String[] elements = "G H B F E A D C".split(" ");
+        String[] elements = keyValues.split(" ");
         for (String element : elements) {
             tree.add(element, element + "_Value");
         }
