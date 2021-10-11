@@ -6,9 +6,8 @@ import org.mockito.InOrder;
 
 import java.util.function.BiConsumer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class TreeTest {
     @Test
@@ -18,7 +17,7 @@ class TreeTest {
     }
 
     @Test
-    void multipleValues_insert_correctTree() {
+    void multipleValues_add_correctTree() {
         Tree<String, String> tree = buildTree();
 
         Node<String, String> nodeG = tree.getRoot();
@@ -37,6 +36,39 @@ class TreeTest {
     }
 
     @Test
+    void valueWithKey_addWithSameKey_valueOverwritten() {
+        Tree<String, String> tree = buildTree();
+        assertEquals("F_Value", tree.get("F"));
+
+        tree.add("F", "new Value");
+        assertEquals("new Value", tree.get("F"));
+    }
+
+    @Test
+    void emptyTree_addKeyNull_throwNullPointerException() {
+        Tree<String, String> tree = new Tree<>();
+
+        assertThrows(NullPointerException.class, () -> tree.add(null, ""));
+    }
+
+    @Test
+    void treeWithMultipleValue_addKeyNull_throwNullPointerException() {
+        Tree<String, String> tree = buildTree();
+
+        assertThrows(NullPointerException.class, () -> tree.add(null, ""));
+    }
+
+    @Test
+    void treeWithMultipleValue_addValueNull_valueSet() {
+        Tree<String, String> tree = buildTree();
+        assertEquals("G_Value", tree.get("G"));
+
+        tree.add("G", null);
+
+        assertNull(tree.get("G"));
+    }
+
+    @Test
     void multipleValues_get_returnsCorrectValue() {
         Tree<String, String> tree = buildTree();
 
@@ -47,12 +79,31 @@ class TreeTest {
     }
 
     @Test
-    void valueWithKey_insertWithSameKey_valueOverwritten() {
+    void multipleValues_getWithNonExistentKey_returnsNull() {
         Tree<String, String> tree = buildTree();
-        assertEquals("F_Value", tree.get("F"));
 
-        tree.add("F", "new Value");
-        assertEquals("new Value", tree.get("F"));
+        assertNull(tree.get("nonExistentKey"));
+    }
+
+    @Test
+    void emptyTree_getWithNonExistentKey_returnsNull() {
+        Tree<String, String> tree = new Tree<>();
+
+        assertNull(tree.get("nonExistentKey"));
+    }
+
+    @Test
+    void emptyTree_getKeyNull_throwNullPointerException() {
+        Tree<String, String> tree = new Tree<>();
+
+        assertThrows(NullPointerException.class, () -> tree.get(null));
+    }
+
+    @Test
+    void treeWithMultipleValue_getKeyNull_throwNullPointerException() {
+        Tree<String, String> tree = buildTree();
+
+        assertThrows(NullPointerException.class, () -> tree.get(null));
     }
 
     @Test
@@ -74,6 +125,17 @@ class TreeTest {
         inOrder.verify(biConsumer).accept("H", "H_Value");
     }
 
+    @Test
+    @SuppressWarnings("unchecked")
+    void emptyTree_traversInOrder_traversedInOrder() {
+        Tree<String, String> tree = new Tree<>();
+        BiConsumer<String, String> biConsumer = mock(BiConsumer.class);
+
+        tree.traverseInorder(biConsumer);
+
+        verifyNoInteractions(biConsumer);
+    }
+
     @NotNull
     private Tree<String, String> buildTree() {
         Tree<String, String> tree = new Tree<>();
@@ -83,6 +145,4 @@ class TreeTest {
         }
         return tree;
     }
-
-    // TODO test null key -> exception, null value -> works, cases when root null
 }
