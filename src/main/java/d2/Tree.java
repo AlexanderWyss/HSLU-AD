@@ -52,16 +52,34 @@ public class Tree<K extends Comparable<K>, V> {
         }
     }
 
-    public int height() {
-        return height(root);
+    public V get(K key) {
+        if (root == null) {
+            return null;
+        }
+        Objects.requireNonNull(key);
+        var closestNode = findClosestNode(root, key);
+        if (closestNode.compareTo(key) == 0) {
+            return closestNode.getValue();
+        }
+        return null;
     }
 
-    private int height(Node<K, V> node) {
-        if (node == null) {
-            return 0;
-        }
-        return 1 + Math.max(height(node.getLeft()), height(node.getRight()));
+    public void traverseInorder(BiConsumer<K, V> consumer) {
+        traverseInorder(root, consumer);
     }
+
+    private void traverseInorder(Node<K, V> node, BiConsumer<K, V> consumer) {
+        if (node != null) {
+            traverseInorder(node.getLeft(), consumer);
+            consumer.accept(node.getKey(), node.getValue());
+            traverseInorder(node.getRight(), consumer);
+        }
+    }
+
+    public Node<K, V> getRoot() {
+        return root;
+    }
+
 
     @Override
     public String toString() {
@@ -94,31 +112,14 @@ public class Tree<K extends Comparable<K>, V> {
         }
     }
 
-    public V get(K key) {
-        if (root == null) {
-            return null;
-        }
-        Objects.requireNonNull(key);
-        var closestNode = findClosestNode(root, key);
-        if (closestNode.compareTo(key) == 0) {
-            return closestNode.getValue();
-        }
-        return null;
+    public int height() {
+        return height(root);
     }
 
-    public void traverseInorder(BiConsumer<K, V> consumer) {
-        traverseInorder(root, consumer);
-    }
-
-    private void traverseInorder(Node<K, V> node, BiConsumer<K, V> consumer) {
-        if (node != null) {
-            traverseInorder(node.getLeft(), consumer);
-            consumer.accept(node.getKey(), node.getValue());
-            traverseInorder(node.getRight(), consumer);
+    private int height(Node<K, V> node) {
+        if (node == null) {
+            return 0;
         }
-    }
-
-    public Node<K, V> getRoot() {
-        return root;
+        return 1 + Math.max(height(node.getLeft()), height(node.getRight()));
     }
 }
