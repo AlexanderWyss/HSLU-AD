@@ -3,35 +3,35 @@ package d2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
  * Binary Tree with unique values
  *
- * @param <T> Type of containing values
+ * @param <K> Type of containing values
  */
-public class Tree<T extends Comparable<T>> {
-    private Node<T> root;
+public class Tree<K extends Comparable<K>, V> {
+    private Node<K, V> root;
 
-    public void insert(T value) {
+    public void add(K key, V value) {
         if (root == null) {
-            root = new Node<>(value);
+            root = new Node<>(key, value);
         } else {
-            Node<T> closestNode = findClosestNode(root, value);
-            setChildForComparisonResult(closestNode, value);
+            Node<K, V> closestNode = findClosestNode(root, key);
+            setChildForComparisonResult(closestNode, key, value);
         }
     }
 
-    private Node<T> findClosestNode(Node<T> node, T value) {
-        var childNode = getChildForComparisonResult(node, value);
+    private Node<K, V> findClosestNode(Node<K, V> node, K key) {
+        var childNode = getChildForComparisonResult(node, key);
         if (childNode != null) {
-            return findClosestNode(childNode, value);
+            return findClosestNode(childNode, key);
         }
         return node;
     }
 
-    private Node<T> getChildForComparisonResult(Node<T> node, T value) {
-        int comparisonResult = node.compareTo(value);
+    private Node<K, V> getChildForComparisonResult(Node<K, V> node, K key) {
+        int comparisonResult = node.compareTo(key);
         if (comparisonResult > 0) {
             return node.getLeft();
         }
@@ -41,13 +41,13 @@ public class Tree<T extends Comparable<T>> {
         return null;
     }
 
-    private void setChildForComparisonResult(Node<T> node, T value) {
-        int comparisonResult = node.compareTo(value);
+    private void setChildForComparisonResult(Node<K, V> node, K key, V value) {
+        int comparisonResult = node.compareTo(key);
         if (comparisonResult > 0) {
-            node.setLeft(new Node<>(value));
+            node.setLeft(new Node<>(key, value));
         }
         if (comparisonResult < 0) {
-            node.setRight(new Node<>(value));
+            node.setRight(new Node<>(key, value));
         }
     }
 
@@ -55,7 +55,7 @@ public class Tree<T extends Comparable<T>> {
         return height(root);
     }
 
-    private int height(Node<T> node) {
+    private int height(Node<K, V> node) {
         if (node == null) {
             return 0;
         }
@@ -70,14 +70,14 @@ public class Tree<T extends Comparable<T>> {
         return sb.toString();
     }
 
-    private void appendString(StringBuilder sb, List<Node<T>> nodes, int nrOfNodesInLastLine) {
-        List<Node<T>> children = new ArrayList<>();
+    private void appendString(StringBuilder sb, List<Node<K, V>> nodes, int nrOfNodesInLastLine) {
+        List<Node<K, V>> children = new ArrayList<>();
         int paddingBefore = (nrOfNodesInLastLine / nodes.size()) - 1;
         int paddingBetween = paddingBefore * 2 + 1;
         sb.append(" ".repeat(paddingBefore));
-        for (Node<T> node : nodes) {
+        for (var node : nodes) {
             if (node != null) {
-                sb.append(node.getValue());
+                sb.append(node.getKey());
                 children.add(node.getLeft());
                 children.add(node.getRight());
             } else {
@@ -93,31 +93,31 @@ public class Tree<T extends Comparable<T>> {
         }
     }
 
-    public T search(T value) {
+    public V get(K key) {
         if (root == null) {
             return null;
         }
-        Objects.requireNonNull(value);
-        Node<T> closestNode = findClosestNode(root, value);
-        if (closestNode.compareTo(value) == 0) {
+        Objects.requireNonNull(key);
+        var closestNode = findClosestNode(root, key);
+        if (closestNode.compareTo(key) == 0) {
             return closestNode.getValue();
         }
         return null;
     }
 
-    public void traverseInorder(Consumer<T> consumer) {
+    public void traverseInorder(BiConsumer<K, V> consumer) {
         traverseInorder(root, consumer);
     }
 
-    private void traverseInorder(Node<T> node, Consumer<T> consumer) {
+    private void traverseInorder(Node<K, V> node, BiConsumer<K, V> consumer) {
         if (node != null) {
             traverseInorder(node.getLeft(), consumer);
-            consumer.accept(node.getValue());
+            consumer.accept(node.getKey(), node.getValue());
             traverseInorder(node.getRight(), consumer);
         }
     }
 
-    public Node<T> getRoot() {
+    public Node<K, V> getRoot() {
         return root;
     }
 }

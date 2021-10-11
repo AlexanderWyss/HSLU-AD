@@ -2,32 +2,42 @@ package d2;
 
 import java.util.Objects;
 
-public class Node<T extends Comparable<T>> {
-    private final T value;
-    private Node<T> left;
-    private Node<T> right;
+public class Node<K extends Comparable<K>, V> {
+    private final K key;
+    private V value;
+    private Node<K, V> left;
+    private Node<K, V> right;
 
-    public Node(T value) {
-        this.value = Objects.requireNonNull(value);
+    public Node(K key, V value) {
+        this.key = Objects.requireNonNull(key);
+        this.value = value;
     }
 
-    public T getValue() {
+    public K getKey() {
+        return key;
+    }
+
+    public V getValue() {
         return value;
     }
 
-    public Node<T> getLeft() {
+    public void setValue(V value) {
+        this.value = value;
+    }
+
+    public Node<K, V> getLeft() {
         return left;
     }
 
-    public void setLeft(Node<T> left) {
+    public void setLeft(Node<K, V> left) {
         this.left = left;
     }
 
-    public Node<T> getRight() {
+    public Node<K, V> getRight() {
         return right;
     }
 
-    public void setRight(Node<T> right) {
+    public void setRight(Node<K, V> right) {
         this.right = right;
     }
 
@@ -39,12 +49,11 @@ public class Node<T extends Comparable<T>> {
         return right != null;
     }
 
-    public int compareTo(T value) {
-        return this.value.compareTo(value);
+    public int compareTo(K key) {
+        return this.key.compareTo(key);
     }
 
-    public int compareTo(Node<T> node) {
-        return value.compareTo(node.value);
+    public int compareTo(Node<K, V> node) {
+        return key.compareTo(node.key);
     }
-
 }
