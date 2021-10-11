@@ -1,8 +1,13 @@
 package d2;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
+
+import java.util.function.BiConsumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 
 class TreeTest {
     @Test
@@ -50,6 +55,7 @@ class TreeTest {
         assertEquals("F_Value", tree.get("F"));
 
     }
+
     @Test
     void valueWithKey_insertWithSameKey_valueOverwritten() {
         Tree<String, String> tree = new Tree<>();
@@ -61,5 +67,28 @@ class TreeTest {
 
         tree.add("F", "new Value");
         assertEquals("new Value", tree.get("F"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void multipleValues_traversInOrder_traversedInOrder() {
+        Tree<String, String> tree = new Tree<>();
+        String[] elements = "G H B F E A D C".split(" ");
+        for (String element : elements) {
+            tree.add(element, element + "_Value");
+        }
+        BiConsumer<String, String> biConsumer = mock(BiConsumer.class);
+        InOrder inOrder = inOrder(biConsumer);
+
+        tree.traverseInorder(biConsumer);
+
+        inOrder.verify(biConsumer).accept("A", "A_Value");
+        inOrder.verify(biConsumer).accept("B", "B_Value");
+        inOrder.verify(biConsumer).accept("C", "C_Value");
+        inOrder.verify(biConsumer).accept("D", "D_Value");
+        inOrder.verify(biConsumer).accept("E", "E_Value");
+        inOrder.verify(biConsumer).accept("F", "F_Value");
+        inOrder.verify(biConsumer).accept("G", "G_Value");
+        inOrder.verify(biConsumer).accept("H", "H_Value");
     }
 }
