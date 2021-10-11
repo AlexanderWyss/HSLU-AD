@@ -1,5 +1,6 @@
 package d2;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
@@ -12,21 +13,14 @@ import static org.mockito.Mockito.mock;
 class TreeTest {
     @Test
     void test() {
-        Tree<String, String> tree = new Tree<>();
-        String[] elements = "G H B F E A D C".split(" ");
-        for (String element : elements) {
-            tree.add(element, "jep");
-        }
+        Tree<String, String> tree = buildTree();
         System.out.println(tree);
     }
 
     @Test
     void multipleValues_insert_correctTree() {
-        Tree<String, String> tree = new Tree<>();
-        String[] elements = "G H B F E A D C".split(" ");
-        for (String element : elements) {
-            tree.add(element, "");
-        }
+        Tree<String, String> tree = buildTree();
+
         Node<String, String> nodeG = tree.getRoot();
         assertEquals("G", nodeG.getKey());
         Node<String, String> nodeB = nodeG.getLeft();
@@ -44,11 +38,8 @@ class TreeTest {
 
     @Test
     void multipleValues_get_returnsCorrectValue() {
-        Tree<String, String> tree = new Tree<>();
-        String[] elements = "G H B F E A D C".split(" ");
-        for (String element : elements) {
-            tree.add(element, element + "_Value");
-        }
+        Tree<String, String> tree = buildTree();
+
         assertEquals("G_Value", tree.get("G"));
         assertEquals("H_Value", tree.get("H"));
         assertEquals("B_Value", tree.get("B"));
@@ -57,12 +48,8 @@ class TreeTest {
 
     @Test
     void valueWithKey_insertWithSameKey_valueOverwritten() {
-        Tree<String, String> tree = new Tree<>();
-        String[] elements = "G H B F E A D C".split(" ");
-        for (String element : elements) {
-            tree.add(element, "");
-        }
-        assertEquals("", tree.get("F"));
+        Tree<String, String> tree = buildTree();
+        assertEquals("F_Value", tree.get("F"));
 
         tree.add("F", "new Value");
         assertEquals("new Value", tree.get("F"));
@@ -71,11 +58,7 @@ class TreeTest {
     @Test
     @SuppressWarnings("unchecked")
     void multipleValues_traversInOrder_traversedInOrder() {
-        Tree<String, String> tree = new Tree<>();
-        String[] elements = "G H B F E A D C".split(" ");
-        for (String element : elements) {
-            tree.add(element, element + "_Value");
-        }
+        Tree<String, String> tree = buildTree();
         BiConsumer<String, String> biConsumer = mock(BiConsumer.class);
         InOrder inOrder = inOrder(biConsumer);
 
@@ -90,4 +73,16 @@ class TreeTest {
         inOrder.verify(biConsumer).accept("G", "G_Value");
         inOrder.verify(biConsumer).accept("H", "H_Value");
     }
+
+    @NotNull
+    private Tree<String, String> buildTree() {
+        Tree<String, String> tree = new Tree<>();
+        String[] elements = "G H B F E A D C".split(" ");
+        for (String element : elements) {
+            tree.add(element, element + "_Value");
+        }
+        return tree;
+    }
+
+    // TODO test null key -> exception, null value -> works, cases when root null
 }
