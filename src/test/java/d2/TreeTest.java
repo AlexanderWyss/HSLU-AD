@@ -53,7 +53,6 @@ class TreeTest {
         assertEquals("H_Value", tree.get("H"));
         assertEquals("B_Value", tree.get("B"));
         assertEquals("F_Value", tree.get("F"));
-
     }
 
     @Test
