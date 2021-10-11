@@ -6,9 +6,10 @@ import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
- * Binary Tree with unique values
+ * Binary Tree Map, allows null values
  *
- * @param <K> Type of containing values
+ * @param <K> Type of key, must be comparable
+ * @param <V> Type of value
  */
 public class Tree<K extends Comparable<K>, V> {
     private Node<K, V> root;
