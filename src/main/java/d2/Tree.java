@@ -18,7 +18,7 @@ public class Tree<K extends Comparable<K>, V> {
             root = new Node<>(key, value);
         } else {
             Node<K, V> closestNode = findClosestNode(root, key);
-            setChildForComparisonResult(closestNode, key, value);
+            setValueForComparisonResult(closestNode, key, value);
         }
     }
 
@@ -41,13 +41,14 @@ public class Tree<K extends Comparable<K>, V> {
         return null;
     }
 
-    private void setChildForComparisonResult(Node<K, V> node, K key, V value) {
+    private void setValueForComparisonResult(Node<K, V> node, K key, V value) {
         int comparisonResult = node.compareTo(key);
         if (comparisonResult > 0) {
             node.setLeft(new Node<>(key, value));
-        }
-        if (comparisonResult < 0) {
+        } else if (comparisonResult < 0) {
             node.setRight(new Node<>(key, value));
+        } else {
+            node.setValue(value);
         }
     }
 
