@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class TreeTest {
+class BinaryTreeTest {
     @Test
     void test() {
         Tree<String, String> tree = buildTree();
@@ -18,7 +18,7 @@ class TreeTest {
 
     @Test
     void multipleValues_add_correctTree() {
-        Tree<String, String> tree = buildTree();
+        BinaryTree<String, String> tree = buildTree();
 
         Node<String, String> nodeG = tree.getRoot();
         assertEquals("G", nodeG.getKey());
@@ -46,7 +46,7 @@ class TreeTest {
 
     @Test
     void emptyTree_addKeyNull_throwNullPointerException() {
-        Tree<String, String> tree = new Tree<>();
+        Tree<String, String> tree = new BinaryTree<>();
 
         assertThrows(NullPointerException.class, () -> tree.add(null, ""));
     }
@@ -87,14 +87,14 @@ class TreeTest {
 
     @Test
     void emptyTree_getWithNonExistentKey_returnsNull() {
-        Tree<String, String> tree = new Tree<>();
+        Tree<String, String> tree = new BinaryTree<>();
 
         assertNull(tree.get("nonExistentKey"));
     }
 
     @Test
     void emptyTree_getKeyNull_throwNullPointerException() {
-        Tree<String, String> tree = new Tree<>();
+        Tree<String, String> tree = new BinaryTree<>();
 
         assertThrows(NullPointerException.class, () -> tree.get(null));
     }
@@ -128,7 +128,7 @@ class TreeTest {
     @Test
     @SuppressWarnings("unchecked")
     void emptyTree_traversInOrder_traversedInOrder() {
-        Tree<String, String> tree = new Tree<>();
+        Tree<String, String> tree = new BinaryTree<>();
         BiConsumer<String, String> biConsumer = mock(BiConsumer.class);
 
         tree.traverseInorder(biConsumer);
@@ -137,8 +137,8 @@ class TreeTest {
     }
 
     @NotNull
-    private Tree<String, String> buildTree() {
-        Tree<String, String> tree = new Tree<>();
+    private BinaryTree<String, String> buildTree() {
+        BinaryTree<String, String> tree = new BinaryTree<>();
         String[] elements = "G H B F E A D C".split(" ");
         for (String element : elements) {
             tree.add(element, element + "_Value");
