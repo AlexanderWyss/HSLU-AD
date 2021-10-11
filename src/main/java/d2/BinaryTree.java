@@ -14,6 +14,7 @@ import java.util.function.BiConsumer;
 public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V> {
     private Node<K, V> root;
 
+    @Override
     public void add(K key, V value) {
         Node<K, V> closestNode = findClosestNode(key);
         if (closestNode == null) {
@@ -60,6 +61,7 @@ public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V> {
         }
     }
 
+    @Override
     public V get(K key) {
         Objects.requireNonNull(key);
         var node = findNode(key);
@@ -78,6 +80,7 @@ public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V> {
     }
 
 
+    @Override
     public void traverseInorder(BiConsumer<K, V> consumer) {
         traverseInorder(root, consumer);
     }
