@@ -53,10 +53,10 @@ public class Tree<K extends Comparable<K>, V> {
     }
 
     public V get(K key) {
+        Objects.requireNonNull(key);
         if (root == null) {
             return null;
         }
-        Objects.requireNonNull(key);
         var closestNode = findClosestNode(root, key);
         if (closestNode.compareTo(key) == 0) {
             return closestNode.getValue();
