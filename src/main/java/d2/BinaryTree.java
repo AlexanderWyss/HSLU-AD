@@ -15,12 +15,19 @@ public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V> {
     private Node<K, V> root;
 
     public void add(K key, V value) {
-        if (root == null) {
+        Node<K, V> closestNode = findClosestNode(key);
+        if (closestNode == null) {
             root = new Node<>(key, value);
         } else {
-            Node<K, V> closestNode = findClosestNode(root, key);
             setValueForComparisonResult(closestNode, key, value);
         }
+    }
+
+    private Node<K, V> findClosestNode(K key) {
+        if (root == null) {
+            return null;
+        }
+        return findClosestNode(root, key);
     }
 
     private Node<K, V> findClosestNode(Node<K, V> node, K key) {
@@ -55,15 +62,21 @@ public class BinaryTree<K extends Comparable<K>, V> implements Tree<K, V> {
 
     public V get(K key) {
         Objects.requireNonNull(key);
-        if (root == null) {
-            return null;
-        }
-        var closestNode = findClosestNode(root, key);
-        if (closestNode.compareTo(key) == 0) {
-            return closestNode.getValue();
+        var node = findNode(key);
+        if (node != null) {
+            return node.getValue();
         }
         return null;
     }
+
+    private Node<K, V> findNode(K key) {
+        Node<K, V> closestNode = findClosestNode(key);
+        if (closestNode != null && closestNode.compareTo(key) == 0) {
+            return closestNode;
+        }
+        return null;
+    }
+
 
     public void traverseInorder(BiConsumer<K, V> consumer) {
         traverseInorder(root, consumer);
