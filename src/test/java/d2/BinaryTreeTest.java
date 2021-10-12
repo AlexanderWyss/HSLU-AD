@@ -11,7 +11,7 @@ import static org.mockito.Mockito.*;
 class BinaryTreeTest {
     @Test
     void test() {
-        Tree<String, String> tree = buildTree("A B C D E");
+        Tree<String, String> tree = buildTree();
         System.out.println(tree);
     }
 
