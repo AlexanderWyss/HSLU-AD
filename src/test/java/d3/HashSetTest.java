@@ -1,16 +1,86 @@
 package d3;
 
+import d1.stack.StackFullException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Stack;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HashSetTest {
+    private static final Logger LOGGER = LogManager.getLogger(HashSetTest.class);
+    private final int performanceSize = 10_000_000;
+    private final int performanceTries = 5;
 
     @Test
-    void test() {
-        new HashSet<String>(10);
+    void performance_hashSet() {
+        long durationSum = 0;
+        for (int tries = 0; tries < performanceTries; tries++) {
+            HashSet<Integer> set = new HashSet<>(performanceSize);
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < performanceSize; i++) {
+                set.add(i);
+            }
+            long duration = System.currentTimeMillis() - startTime;
+            durationSum += duration;
+            LOGGER.info("Performance fill HashSet ({}): {}ms", tries, duration);
+        }
+        LOGGER.info("Performance fill HashSet average: {}ms", durationSum / performanceTries);
+    }
+
+    @Test
+    void performance_javaStack() {
+        long durationSum = 0;
+        for (int tries = 0; tries < performanceTries; tries++) {
+            Stack<Integer> javaStack = new Stack<>();
+            javaStack.ensureCapacity(performanceSize);
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < performanceSize; i++) {
+                javaStack.add(i);
+            }
+            long duration = System.currentTimeMillis() - startTime;
+            durationSum += duration;
+            LOGGER.info("Performance fill JavaStack ({}): {}ms", tries, duration);
+        }
+        LOGGER.info("Performance fill JavaStack average: {}ms", durationSum / performanceTries);
+    }
+
+    @Test
+    void performance_ownStack() throws StackFullException {
+        long durationSum = 0;
+        for (int tries = 0; tries < performanceTries; tries++) {
+            d1.stack.Stack<Integer> ownStack = new d1.stack.ArrayStack<>(performanceSize);
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < performanceSize; i++) {
+                ownStack.push(i);
+            }
+            long duration = System.currentTimeMillis() - startTime;
+            durationSum += duration;
+            LOGGER.info("Performance fill own Stack ({}): {}ms", tries, duration);
+        }
+        LOGGER.info("Performance fill own Stack average: {}ms", durationSum / performanceTries);
+    }
+
+    @Test
+    void performance_deque() {
+        long durationSum = 0;
+        for (int tries = 0; tries < performanceTries; tries++) {
+            Deque<Integer> deque = new ArrayDeque<>(performanceSize);
+            long startTime = System.currentTimeMillis();
+            for (int i = 0; i < performanceSize; i++) {
+                deque.push(i);
+            }
+            long duration = System.currentTimeMillis() - startTime;
+            durationSum += duration;
+            LOGGER.info("Performance fill Deque ({}): {}ms", tries, duration);
+        }
+        LOGGER.info("Performance fill Deque average: {}ms", durationSum / performanceTries);
     }
 
     @Test
