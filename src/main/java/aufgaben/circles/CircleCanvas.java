@@ -9,7 +9,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -28,17 +27,6 @@ public class CircleCanvas extends JPanel implements MouseListener, MouseMotionLi
     public void run() {
         while (!Thread.currentThread().isInterrupted()) {
             repaint();
-            synchronized (circles) {
-                Iterator<ColoredFallingCircle> iterator = circles.iterator();
-                while (iterator.hasNext()) {
-                    ColoredFallingCircle circle = iterator.next();
-                    if (circle.isDead()) {
-                        iterator.remove();
-                    } else if (circle.getPosition().getY() + circle.getDiameter() >= getHeight()) {
-                        circle.kill();
-                    }
-                }
-            }
         }
     }
 
@@ -65,11 +53,14 @@ public class CircleCanvas extends JPanel implements MouseListener, MouseMotionLi
     }
 
     private void createCircle(MouseEvent e) {
+        //noinspection SuspiciousMethodCalls
         ColoredFallingCircle fallingCircleTask = new ColoredFallingCircleBuilder() //
                 .setPosition(new Point(e.getX(), e.getY())) //
                 .setDiameter(randomInt(20, 51)) //
                 .setColor(randomColor()) //
                 .setFallingSpeed(randomInt(1, 10)) //
+                .setCheckDying(circle -> circle.getPosition().getY() + circle.getDiameter() >= getHeight()) //
+                .setOnDead(circles::remove) //
                 .build();
         circles.add(fallingCircleTask);
         new DaemonThread(fallingCircleTask).start();

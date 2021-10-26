@@ -4,22 +4,27 @@ import aufgaben.shape.Circle;
 import aufgaben.shape.Point;
 
 import java.awt.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class ColoredFallingCircle extends Circle implements Runnable {
     private Color color;
     private final int fallingSpeed;
-    private boolean isDying = false;
+    private Predicate<Circle> checkDyingPredicate;
+    private Consumer<Circle> onDead;
 
-    public ColoredFallingCircle(Point position, int diameter, Color color, int fallingSpeed) {
+    private ColoredFallingCircle(Point position, int diameter, Color color, int fallingSpeed, Predicate<Circle> checkDyingPredicate, Consumer<Circle> onDead) {
         super(position, diameter);
         this.color = color;
         this.fallingSpeed = fallingSpeed;
+        this.checkDyingPredicate = checkDyingPredicate;
+        this.onDead = onDead;
     }
 
     @Override
     public void run() {
         while (getDiameter() > 0 && !Thread.currentThread().isInterrupted()) {
-            if (isDying) {
+            if (checkDyingPredicate.test(this)) {
                 setDiameter(getDiameter() - 2);
                 getPosition().moveRelative(1, 2);
                 color = color.brighter();
@@ -34,14 +39,11 @@ public class ColoredFallingCircle extends Circle implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
+        onDead.accept(this);
     }
 
     public Color getColor() {
         return color;
-    }
-
-    public void kill() {
-        isDying = true;
     }
 
     public boolean isDead() {
@@ -53,6 +55,8 @@ public class ColoredFallingCircle extends Circle implements Runnable {
         private Color color;
         private int fallingSpeed;
         private Point position;
+        private Predicate<Circle> checkDyingPredicate;
+        private Consumer<Circle> onDead;
 
         public ColoredFallingCircleBuilder setPosition(Point position) {
             this.position = position;
@@ -74,8 +78,18 @@ public class ColoredFallingCircle extends Circle implements Runnable {
             return this;
         }
 
+        public ColoredFallingCircleBuilder setCheckDying(Predicate<Circle> checkDyingPredicate) {
+            this.checkDyingPredicate = checkDyingPredicate;
+            return this;
+        }
+
+        public ColoredFallingCircleBuilder setOnDead(Consumer<Circle> onDead) {
+            this.onDead = onDead;
+            return this;
+        }
+
         public ColoredFallingCircle build() {
-            return new ColoredFallingCircle(position, diameter, color, fallingSpeed);
+            return new ColoredFallingCircle(position, diameter, color, fallingSpeed, checkDyingPredicate, onDead);
         }
     }
 }
