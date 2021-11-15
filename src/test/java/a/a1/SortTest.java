@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class SortTest {
-    private final static int N = 10000;
+    private final static int N = 10_000;
     private final static int TRIES = 10;
     private final static boolean PRINT_ARRAY = false;
     private final static int[] PRE_SORTED_ARRAY = createPreSortedArray();
@@ -22,6 +22,7 @@ class SortTest {
     void insertionSort() {
         testSort(Sort::insertionSort);
     }
+
     @Test
     void insertionSort_preSorted_runtime() {
         measurePreSorted("insertionSort", Sort::insertionSort);
@@ -56,7 +57,7 @@ class SortTest {
     void selectionSort_randomSorted_runtime() {
         measureRandomSorted("selectionSort", Sort::selectionSort);
     }
-    
+
     @Test
     void bubbleSort() {
         testSort(Sort::bubbleSort);
