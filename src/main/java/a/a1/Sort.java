@@ -32,6 +32,7 @@ public class Sort {
      * f) pro durchlauf von i sind 2(n - i) vergleiche notwendig
      * [n]E[i=0]2(n-i)+1 = (n+1)^2 = n^2 + 2n + 1
      * O(n^2)
+     *
      * @param array
      */
     public static void selectionSort(final int[] array) {
@@ -45,6 +46,21 @@ public class Sort {
             int temp = array[i];
             array[i] = array[smallestValueIndex];
             array[smallestValueIndex] = temp;
+        }
+    }
+
+    public static void bubbleSort(final int[] array) {
+        boolean isSorted = false;
+        for (int i = 0; i < array.length - 1 && !isSorted; i++) {
+            isSorted = true;
+            for (int j = 1; j < array.length - i; j++) {
+                if (array[j - 1] > array[j]) {
+                    int temp = array[j - 1];
+                    array[j - 1] = array[j];
+                    array[j] = temp;
+                    isSorted = false;
+                }
+            }
         }
     }
 }
