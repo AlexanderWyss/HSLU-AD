@@ -29,14 +29,16 @@ public class Sort {
      * [1, 2, 3[b], 3[a], 4]
      * <p>
      * c) nein, ist immer gleich 0(n^2) unabhängig von den Daten
-     *
+     * f) pro durchlauf von i sind 2(n - i) vergleiche notwendig
+     * [n]E[i=0]2(n-i)+1 = (n+1)^2 = n^2 + 2n + 1
+     * O(n^2)
      * @param array
      */
     public static void selectionSort(final int[] array) {
-        for (int i = 0; i < array.length; i++) {
+        for (int i = 0; i < array.length; i++) { // n | 1
             int smallestValueIndex = i;
-            for (int j = i + 1; j < array.length; j++) {
-                if (array[j] < array[smallestValueIndex]) {
+            for (int j = i + 1; j < array.length; j++) { // n - i | 1
+                if (array[j] < array[smallestValueIndex]) { // | 1
                     smallestValueIndex = j;
                 }
             }
