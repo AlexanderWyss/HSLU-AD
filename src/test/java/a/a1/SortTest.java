@@ -1,6 +1,5 @@
 package a.a1;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -12,81 +11,117 @@ import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class SortTest {
+    private final static int N = 100000;
+    private final static int TRIES = 10;
+    private final static boolean PRINT_ARRAY = false;
+    private final static int[] PRE_SORTED_ARRAY = createPreSortedArray();
+    private final static int[] REVERSE_SORTED_ARRAY = createReverseSortedArray();
+    private final static int[] RANDOM_SORTED_ARRAY = createRandomSortedArray();
+
     @Test
     void insertionSort() {
-        Integer[] ints = {0, -7, 2, 1, 3, 4, 1, -7, 15, 4, 7, 8};
-        Sort.insertionSort(ints);
-        assertArrayEquals(new Integer[]{-7, -7, 0, 1, 1, 2, 3, 4, 4, 7, 8, 15}, ints);
+        testSort(Sort::insertionSort);
     }
-
-    private final static int n = 100_000;
-    private final static int tries = 10;
-    private final static boolean printArray = false;
-
     @Test
     void insertionSort_preSorted_runtime() {
-        Integer[] ints = getPreSortedArray();
-        Measurement measurement = getMeasurement("insertionSort.preSorted", ints, Sort::insertionSort);
-        measurement.printLog();
+        measurePreSorted("insertionSort", Sort::insertionSort);
     }
 
     @Test
     void insertionSort_reverseSorted_runtime() {
-        Integer[] ints = getReverseSorted();
-        Measurement measurement = getMeasurement("insertionSort.reverseSorted", ints, Sort::insertionSort);
-        measurement.printLog();
+        measureReverseSorted("insertionSort", Sort::insertionSort);
     }
 
     @Test
     void insertionSort_randomSorted_runtime() {
-        Integer[] ints = getRandomSorted();
-        Measurement measurement = getMeasurement("insertionSort.randomSorted", ints, Sort::insertionSort);
+        measureRandomSorted("insertionSort", Sort::insertionSort);
+    }
+
+    @Test
+    void selectionSort() {
+        testSort(Sort::selectionSort);
+    }
+
+    @Test
+    void selectionSort_preSorted_runtime() {
+        measurePreSorted("selectionSort", Sort::selectionSort);
+    }
+
+    @Test
+    void selectionSort_reverseSorted_runtime() {
+        measureReverseSorted("selectionSort", Sort::selectionSort);
+    }
+
+    @Test
+    void selectionSort_randomSorted_runtime() {
+        measureRandomSorted("selectionSort", Sort::selectionSort);
+    }
+
+    private void testSort(Consumer<int[]> sorter) {
+        int[] ints = {0, -7, 2, 1, 3, 4, 1, -7, 15, 4, 7, 8};
+        sorter.accept(ints);
+        assertArrayEquals(new int[]{-7, -7, 0, 1, 1, 2, 3, 4, 4, 7, 8, 15}, ints);
+    }
+
+    private void measureRandomSorted(String name, Consumer<int[]> sorter) {
+        Measurement measurement = measureRuntime(name + ".randomSorted", RANDOM_SORTED_ARRAY, sorter);
         measurement.printLog();
     }
 
-    @NotNull
-    private Integer[] getPreSortedArray() {
-        Integer[] ints = new Integer[n];
-        for (int i = 0; i < n; i++) {
+    private void measureReverseSorted(String name, Consumer<int[]> sorter) {
+        Measurement measurement = measureRuntime(name + ".reverseSorted", REVERSE_SORTED_ARRAY, sorter);
+        measurement.printLog();
+    }
+
+    private void measurePreSorted(String name, Consumer<int[]> sorter) {
+        Measurement measurement = measureRuntime(name + ".preSorted", PRE_SORTED_ARRAY, sorter);
+        measurement.printLog();
+    }
+
+    private Measurement measureRuntime(String name, int[] originalInts, Consumer<int[]> sorter) {
+        if (PRINT_ARRAY) {
+            System.out.println(Arrays.toString(originalInts));
+        }
+        Measurement measurement = new Measurement(name);
+        for (int i = 0; i < TRIES; i++) {
+            int[] ints = copyArray(originalInts);
+            measurement.start();
+            sorter.accept(ints);
+            measurement.stop();
+            if (PRINT_ARRAY && i == 0) {
+                System.out.println(Arrays.toString(ints));
+            }
+        }
+        return measurement;
+    }
+
+    private static int[] createPreSortedArray() {
+        int[] ints = new int[N];
+        for (int i = 0; i < N; i++) {
             ints[i] = i;
         }
         return ints;
     }
 
-    @NotNull
-    private Integer[] getReverseSorted() {
-        Integer[] ints = new Integer[n];
-        for (int i = 0; i < n; i++) {
-            ints[n - i - 1] = i;
+    private static int[] createReverseSortedArray() {
+        int[] ints = new int[N];
+        for (int i = 0; i < N; i++) {
+            ints[N - i - 1] = i;
         }
         return ints;
     }
 
-    private Integer[] getRandomSorted() {
-        Integer[] ints = new Integer[n];
+    private static int[] createRandomSortedArray() {
+        int[] ints = new int[N];
         Random random = new Random();
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < N; i++) {
             ints[i] = random.nextInt();
         }
         return ints;
     }
 
-    @NotNull
-    private <T> Measurement getMeasurement(final String name, final T[] originalArray, final Consumer<T[]> sorter) {
-        if (printArray) {
-            System.out.println(Arrays.toString(originalArray));
-        }
-        Measurement measurement = new Measurement(name);
-        for (int i = 0; i < tries; i++) {
-            T[] array = Arrays.copyOf(originalArray, originalArray.length);
-            measurement.start();
-            sorter.accept(array);
-            measurement.stop();
-            if (printArray && i == 0) {
-                System.out.println(Arrays.toString(array));
-            }
-        }
-        return measurement;
+    private int[] copyArray(int[] originalArray) {
+        return Arrays.copyOf(originalArray, originalArray.length);
     }
 
     private static class Measurement {
