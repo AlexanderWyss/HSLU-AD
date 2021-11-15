@@ -1,6 +1,6 @@
 package aufgaben.shape;
 
-public class Circle extends Shape{
+public class Circle extends Shape {
     private int diameter;
 
     public Circle(final int x, final int y, final int diameter) {
@@ -21,12 +21,12 @@ public class Circle extends Shape{
     }
 
     @Override
-    public int getPerimeter() {
-        return (int) (diameter * Math.PI);
+    public double getPerimeter() {
+        return diameter * Math.PI;
     }
 
     @Override
-    public int getArea() {
-        return (int) (Math.pow(diameter / 2.0, 2) * Math.PI);
+    public double getArea() {
+        return Math.pow(diameter / 2.0, 2) * Math.PI;
     }
 }

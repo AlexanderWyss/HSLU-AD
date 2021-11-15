@@ -16,12 +16,12 @@ public final class Rectangle extends Shape {
     }
 
     @Override
-    public int getPerimeter() {
+    public double getPerimeter() {
         return 2 * width + 2 * height;
     }
 
     @Override
-    public int getArea() {
+    public double getArea() {
         return width * height;
     }
 
