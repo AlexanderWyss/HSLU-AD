@@ -16,7 +16,9 @@ class TriangleEditorTest {
                 new Triangle(new Point(2, 4), new Point(30, 20), new Point(0, 5)), //
                 new Triangle(new Point(7, 8), new Point(77, 77), new Point(58, 98)) //
         };
-        Arrays.sort(triangles);
+
+        Arrays.sort(triangles); // stabil/mergesort -> siehe java doc
+
         double previousArea = 0;
         for (Triangle triangle : triangles) {
             double area = triangle.getArea();
@@ -33,7 +35,9 @@ class TriangleEditorTest {
                 new Triangle(new Point(2, 4), new Point(30, 20), new Point(0, 5)), //
                 new Triangle(new Point(7, 8), new Point(77, 77), new Point(58, 98)) //
         };
-        Arrays.sort(triangles, new TrianglePerimeterComparator());
+
+        Arrays.sort(triangles, new TrianglePerimeterComparator()); // stabil/mergesort -> siehe java doc
+
         double previousPerimeter = 0;
         for (Triangle triangle : triangles) {
             double perimeter = triangle.getPerimeter();
