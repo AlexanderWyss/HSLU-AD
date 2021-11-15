@@ -33,6 +33,24 @@ class TriangleTest {
         assertEquals(15, testTriangle().getArea(), 0.001);
     }
 
+    @Test
+    void compareTo_thisAreaLowerThanOther_returnMinus1() {
+        Triangle triangle = new Triangle(new Point(10, 15), new Point(5, 7), new Point(25, 25));
+        assertEquals(-1, testTriangle().compareTo(triangle));
+    }
+
+    @Test
+    void compareTo_thisAreaGreaterThanOther_return1() {
+        Triangle triangle = new Triangle(new Point(10, 15), new Point(5, 7), new Point(10, 10));
+        assertEquals(1, testTriangle().compareTo(triangle));
+    }
+
+    @Test
+    void compareTo_thisAreaEqualOther_return0() {
+        Triangle triangle = new Triangle(new Point(20, 25), new Point(10, 15), new Point(5, 7));
+        assertEquals(0, testTriangle().compareTo(triangle));
+    }
+
     @NotNull
     private Triangle testTriangle() {
         return new Triangle(new Point(10, 15), new Point(5, 7), new Point(20, 25));
