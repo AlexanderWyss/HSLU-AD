@@ -11,8 +11,8 @@ import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 class SortTest {
-    private final static int N = 10_000;
-    private final static int TRIES = 10;
+    private final static int N = 100_000;
+    private final static int TRIES = 3;
     private final static boolean PRINT_ARRAY = false;
     private final static int[] PRE_SORTED_ARRAY = createPreSortedArray();
     private final static int[] REVERSE_SORTED_ARRAY = createReverseSortedArray();
@@ -164,7 +164,7 @@ class SortTest {
         }
 
         public void printLog() {
-            System.out.printf("%s: %gms%n", name, measurements.stream().mapToLong(Long::longValue).average().getAsDouble());
+            System.out.printf("%s[n=%d,t=%d]: %gms%n", name, N, TRIES, measurements.stream().mapToLong(Long::longValue).average().getAsDouble());
             for (Long measurement : measurements) {
                 System.out.printf("\t%dms%n", measurement);
             }
